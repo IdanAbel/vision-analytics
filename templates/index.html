@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Vision Analytics</title>
+</head>
+<body>
+    <h1>Upload CCTV Video</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="video" accept="video/*" required />
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if video_file and heatmap_file %}
+        <h2>Results:</h2>
+        <video width="640" height="360" controls>
+            <source src="{{ video_file }}" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <h3>Heatmap:</h3>
+        <img src="{{ heatmap_file }}" alt="Heatmap" width="640" />
+    {% endif %}
+</body>
+</html>
