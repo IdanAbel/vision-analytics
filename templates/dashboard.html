@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vision Dashboard - History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    a {
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <h1>All Video Analyses</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Original File</th>
+        <th>Timestamp</th>
+        <th>Tracked Video</th>
+        <th>Heatmap</th>
+        <th>Insights</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ entry.id }}</td>
+        <td>{{ entry.filename }}</td>
+        <td>{{ entry.timestamp }}</td>
+        <td><a href="{{ url_for('download_file', path=entry.video_path) }}" target="_blank">View</a></td>
+        <td><a href="{{ url_for('download_file', path=entry.heatmap_path) }}" target="_blank">View</a></td>
+        <td><a href="{{ url_for('download_file', path=entry.insights_path) }}" target="_blank">Download</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No entries yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

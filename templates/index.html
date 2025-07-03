@@ -2,7 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Vision Analytics</title>
+    <title>Vision Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+        a {
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
     <h1>Upload CCTV Video</h1>
@@ -11,14 +41,72 @@
         <button type="submit">Analyze</button>
     </form>
 
-    {% if video_file and heatmap_file %}
-        <h2>Results:</h2>
-        <video width="640" height="360" controls>
-            <source src="{{ video_file }}" type="video/mp4" />
-            Your browser does not support the video tag.
-        </video>
-        <h3>Heatmap:</h3>
-        <img src="{{ heatmap_file }}" alt="Heatmap" width="640" />
+    {% if video_file and heatmap_file and insights_file and insights_data %}
+        <div class="section">
+            <h2>Processed Video</h2>
+            <video width="640" height="360" controls>
+                <source src="{{ video_file }}" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="section">
+            <h2>Heatmap</h2>
+            <img src="{{ heatmap_file }}" alt="Heatmap" width="640" />
+        </div>
+
+        <div class="section">
+            <h2>Insights Summary</h2>
+            <table>
+                <tr><th>Total People</th><td>{{ insights_data.total_people }}</td></tr>
+                <tr><th>Average Time in Frame (sec)</th><td>{{ insights_data.avg_time_in_frame_sec }}</td></tr>
+                <tr><th>Most Visited Point (x,y)</th><td>{{ insights_data.most_visited_point }}</td></tr>
+                <tr><th>Hotspots Count</th><td>{{ insights_data.hotspots | length }}</td></tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>People Per Minute</h2>
+            <canvas id="peopleChart" width="600" height="300"></canvas>
+        </div>
+
+        <div class="section">
+            <h2>Download</h2>
+            <a href="{{ insights_file }}" download>Download insights.json</a>
+        </div>
+
+        <script>
+            const ctx = document.getElementById('peopleChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ insights_data.people_per_minute.keys() | list | safe }},
+                    datasets: [{
+                        label: 'People per Minute',
+                        data: {{ insights_data.people_per_minute.values() | list | safe }},
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of People'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time Interval'
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
     {% endif %}
 </body>
 </html>

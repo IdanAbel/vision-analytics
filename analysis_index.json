@@ -1,0 +1,10 @@
+[
+  {
+    "id": "20250703_175627",
+    "filename": "3318086-hd_1920_1080_25fps.mp4",
+    "timestamp": "2025-07-03 18:04:06",
+    "video_path": "processed/20250703_175627/tracked_video.mp4",
+    "heatmap_path": "processed/20250703_175627/heatmap.jpg",
+    "insights_path": "processed/20250703_175627/insights.json"
+  }
+]
